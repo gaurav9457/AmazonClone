@@ -1,0 +1,32 @@
+import React, { createContext, useState } from 'react'
+
+export const MyContext = createContext();
+const AuthProvider = ({children}) => {
+
+    const [isLoggedIn, setLoggedIn] = useState(false);
+    const [addCart, setAddCart] = useState([]);
+    const [userData, setUserData] = useState("");
+    const [count,setCount] = useState(0);
+    const [searchInp,setSearchInp] = useState("");
+  
+    const object = {
+      isLoggedIn1: isLoggedIn,
+      setLoggedIn1: setLoggedIn,
+      addCart:addCart,
+      setAddCart:setAddCart,
+      setUserData: setUserData,
+      userData: userData,
+      count:count,
+      setCount:setCount,
+      searchInp:searchInp,
+      setSearchInp:setSearchInp
+    };
+  
+    return (
+      <>
+        <MyContext.Provider value={object}>{children}</MyContext.Provider>
+      </>
+    );
+  };
+
+export default AuthProvider
