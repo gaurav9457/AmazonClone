@@ -1,0 +1,314 @@
+import React, { useState } from 'react';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import { Alert, Button, Paper, Snackbar } from '@mui/material';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+const productObject={
+    img:"",
+    about:"",
+    MRP:"",
+    RS:"",
+    heading:"",
+    brand:"",
+    modal:"",
+    Special:"",
+    accrAbout:"",
+    accrAbout2:"",
+    accrAbout3:"",
+    accrAbout4:""
+
+}
+const AddProduct = () => {
+    const [data,setData] = useState(productObject);
+    const [showAlert, setShowAlert] = React.useState(false);
+    const [message, setMessage] = React.useState('');
+    const [color,setColor] = React.useState(false);
+    const naviget=useNavigate();
+
+    const handelChnage=(e)=>{
+      setData((prev)=>({
+        ...prev,
+        [e.target.name]:e.target.value
+
+      }))
+    }
+
+  const validate=()=>{
+
+    if (data.about == '') {
+      setShowAlert(true);
+      setMessage('Enter Product Name');
+     
+    }
+    else if(data.img == ''){
+      setShowAlert(true);
+      setMessage("Enter image url");
+      
+    }
+    else if(data.MRP == ''){
+      setShowAlert(true);
+      setMessage("Enter Mrp of Product");
+    }
+    else if (data.RS=='') {
+      setShowAlert(true);
+      setMessage("Enter acctual selling  price");
+      
+    }
+    else if (data.heading=='') {
+      setShowAlert(true);
+      setMessage('Enter Full product name with brand')
+      
+    }
+    else if (data.brand=='') {
+      setShowAlert(true);
+      setMessage('Enter brand name');
+      
+    }
+    else if (data.modal=='') {
+      setShowAlert(true);
+      setMessage("Enter Model name");
+      
+    }
+    else if (data.Special=='') {
+      setShowAlert(true);
+      setMessage("Enter Special Feature")
+      
+    }
+    else if (data.accrAbout=='') {
+      setShowAlert(true);
+      setMessage("Enter Product Discription");
+      
+    }
+    else{
+      submitProduct();
+      setShowAlert(true);
+      setMessage('Product added successfully')
+      setColor(true);
+      setTimeout(() => {
+        setColor(false);
+        naviget('/home');
+      }, 2000);
+    }
+
+  }
+
+    const submitProduct=()=>{
+      axios.post('http://localhost:9000/card',data)
+      .then(()=>{
+        console.log("data product added");
+      })
+      .catch(()=>{
+        console.log("Error during adding");
+      })
+      setData(productObject)
+
+    }
+
+     
+      return (
+        <React.Fragment>
+          <Typography variant="h6" gutterBottom textAlign={'center'}>
+            Fill Details Of Product
+          </Typography>
+          <Paper elevation={2} sx={{padding:"2%",maxWidth:"sm",margin:'0 auto',textAlign:"center"}} >
+          <Grid container spacing={2}>
+            <Grid item xs={8} sm={6}>
+              <TextField
+                required
+                id="about"
+                name="about"
+                value={data.about}
+                onChange={handelChnage}
+                label="Product name"
+                autoComplete="given-name"
+                variant="standard"
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={8} sm={6}>
+              <TextField
+                required
+                id="img"
+                name="img"
+                value={data.img}
+                onChange={handelChnage}
+                label="Product Image address" 
+                autoComplete="family-name"
+                variant="standard"
+                fullWidth
+              />
+            </Grid>
+            {/* <Grid item xs={8}>
+              <TextField
+                required
+                id="address1"
+                name="address1"
+                label="Address line 1"
+                
+                autoComplete="shipping address-line1"
+                variant="standard"
+              />
+            </Grid>
+            <Grid item xs={8}>
+              <TextField
+                id="address2"
+                name="address2"
+                label="Address line 2"
+                
+                autoComplete="shipping address-line2"
+                variant="standard"
+              />
+            </Grid> */}
+            <Grid item xs={8} sm={6}>
+              <TextField
+                required
+                id="MRP"
+                name="MRP"
+                value={data.MRP}
+                onChange={handelChnage}
+                label="MRP On Product"
+                autoComplete="shipping address-level2"
+                variant="standard"
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={8} sm={6}>
+              <TextField
+                id="RS"
+                name="RS"
+                value={data.RS}
+                onChange={handelChnage}
+                label="Actual sale amount"
+                variant="standard"
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={8} sm={6}>
+              <TextField
+                required
+                id="heading"
+                name="heading"
+                value={data.heading}
+                onChange={handelChnage}
+                label="Product heading"                
+                autoComplete="shipping postal-code"
+                variant="standard"
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={8} sm={6}>
+              <TextField
+                required
+                id="brand"
+                name="brand"
+                value={data.brand}
+                onChange={handelChnage}
+                label="Product Brand"                
+                autoComplete="shipping country"
+                variant="standard"
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={8} sm={6}>
+              <TextField
+                required
+                id="modal"
+                name="modal"
+                value={data.modal}
+                onChange={handelChnage}
+                label="Product Model"                
+                autoComplete="shipping country"
+                variant="standard"
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={8} sm={6}>
+              <TextField
+                required
+                id="Special"
+                name="Special"
+                value={data.Special}
+                onChange={handelChnage}
+                label="Special Feature"                
+                autoComplete="shipping country"
+                variant="standard"
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={8} sm={6}>
+              <TextField
+                required
+                id="accrAbout"
+                name="accrAbout"
+                value={data.accrAbout}
+                onChange={handelChnage}
+                label="Product Discripation"                
+                autoComplete="shipping country"
+                variant="standard"
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={8} sm={6}>
+              <TextField
+                required
+                id="accrAbout2"
+                name="accrAbout2"
+                value={data.accrAbout2}
+                onChange={handelChnage}
+                label="New Features"                
+                autoComplete="shipping country"
+                variant="standard"
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={8} sm={6}>
+              <TextField
+                required
+                id="accrAbout3"
+                name="accrAbout3"
+                value={data.accrAbout3}
+                onChange={handelChnage}
+                label="More information about product"                
+                autoComplete="shipping country"
+                variant="standard"
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={8} sm={6}>
+              <TextField
+                required
+                id="accrAbout4"
+                name="accrAbout4"
+                value={data.accrAbout4}
+                onChange={handelChnage}
+                label="More info..."                
+                autoComplete="shipping country"
+                variant="standard"
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sx={{alignItems:"center"}}>
+              <Button variant='contained' onClick={()=>{validate()}} >Add Product</Button>
+            </Grid>
+          </Grid>
+          {showAlert && (
+                        <Snackbar open={showAlert} autoHideDuration={3000}
+                            onClose={() => { setShowAlert(false) }} anchorOrigin={{ vertical: 'top', horizontal: "right" }} >
+                            <Alert onClose={() => { setShowAlert(false) }} severity={color ? 'success': 'error'} sx={{ width: '100%' }} >
+                                {message}
+                            </Alert>
+                        </Snackbar>
+
+                    )}
+          </Paper>
+        </React.Fragment>
+      );
+    }
+
+
+export default AddProduct
