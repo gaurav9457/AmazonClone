@@ -1,0 +1,202 @@
+import React, { useContext, useEffect, useState } from 'react';
+// import { Avatar, Box, Container, InputLabel, TextField, Typography } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
+// import { MyContext } from '../Authprovider';
+import { Alert, Avatar, Box, Container, Grid, IconButton, InputAdornment, InputLabel, OutlinedInput, Paper, Snackbar, TextField, Typography } from '@mui/material';
+import Button from '@mui/material/Button';
+import axios from 'axios';
+
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { MyContext } from '../AuthProvider';
+
+const obj = {
+    email: "",
+    password: ""
+}
+const Login = () => {
+    const [loginData, setLoginData] = useState(obj);
+    const [jsonData, setJsonData] = useState([]);
+    const [showPassword, setShowPassword] = React.useState(false);
+    const [showAlert, setShowAlert] = React.useState(false);
+    const object=useContext(MyContext);
+    const [message, setMessage] = React.useState('');
+    const naviget = useNavigate();
+    const url = 'http://localhost:9000/users';
+
+    useEffect(() => {
+        axios.get(url)
+            .then((res) => {
+                setJsonData(res.data);
+
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }, [])
+
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+
+    const handleChange = (e) => {
+        setLoginData(prev => ({
+            ...prev,
+            [e.target.name]: e.target.value
+        }));
+    };
+
+    const validate = () => {
+        if (loginData.email == '') {
+            setShowAlert(true);
+            setMessage("Enter Email id");
+        }
+        else if (loginData.password == '') {
+           setShowAlert(true);
+           setMessage("Enter Password");
+
+        }
+        else {
+            SubmitLogin();
+        }
+
+    }
+    const validate1=()=>{
+        if (loginData.email=='') {
+            setShowAlert(true);
+            setMessage("Please Enter Email id");           
+        }
+        // else{
+        //     naviget(`/forgotPassword/${loginData.email}`)
+        // }
+    }
+
+
+    const SubmitLogin = () => {
+        let foundUser = jsonData.find((item) => item.email == loginData.email)
+
+        if (foundUser && foundUser.password == loginData.password) {
+            // alert("Login successfull")
+            object.setLoggedIn1(true);
+            object.setUserData(foundUser);
+            naviget('/home');
+        }
+        else {
+            setShowAlert(true);
+            setMessage("Enter Correct Email-id and Password");
+        }
+
+    }
+
+
+    //   console.log("obj",loginData);
+
+
+    return (
+        <>
+            <Container maxWidth='xs'>
+                <Paper elevation={7} sx={{ p: 5, pt: 0, mb: 2 }}>
+                    <Box
+                        sx={{
+                            border: "1px solid balck",
+                            marginTop: 8,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <div className='d-flex align-content-center '><Avatar sx={{ m: 1, mt: 2, bgcolor: 'secondary.main' }}>
+                            <LockOutlinedIcon />
+                        </Avatar></div>
+
+                        <Typography component="h1" variant="h5" align='center'>
+                            Login
+                        </Typography>
+                        {/* <label htmlFor="" style={{textAlign:"left"}}>Email-id <span style={{color:"red"}}>*</span></label> */}
+
+                        <TextField margin='normal' name="email" id=""
+                            label="Email-id" onChange={handleChange} fullWidth required />
+
+                        {/* <label htmlFor="">Password <span style={{color:"red"}}>*</span> </label> */}
+                        {/* <InputLabel htmlFor="filled-adornment-password">Password</InputLabel> */}
+                        <OutlinedInput margin='normal' name="password" id="" placeholder='Password*'
+                            onChange={handleChange} fullWidth required
+                            type={showPassword ? 'text' : 'password'}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleClickShowPassword}
+                                        onMouseDown={handleMouseDownPassword}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+
+                        {/* <OutlinedInput
+            id="outlined-adornment-password"
+            type={showPassword ? 'text' : 'password'}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+            label="Password"
+            onChange={handleChange}
+            fullWidth required
+
+          />         */}
+
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
+                            onClick={() => { validate() }}
+                        >
+                            Login
+                        </Button>
+                        {/* <Link to='/signup'>Not yet Register </Link> */}
+                        <Grid container>
+              <Grid item xs>
+                {/* <Button size='small' sx={{fontSize : 'small',padding:'1px',margin:"0px"}} onClick={()=>{validate1()}}  variant="body2">
+                  Forgot password?
+                </Button> */}
+                {loginData.email==''? <Link onClick={()=>{validate1()}}>Forgot Password</Link> : <Link to={`/forgotPassword/${loginData.email}`}>Forgot Password</Link>}
+              </Grid>
+              <Grid item>
+                <Link to={"/signup"} className="" style={{ fontSize: "small " }} variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
+            </Grid> 
+                    </Box>
+                    {showAlert && (
+                        <Snackbar open={showAlert} autoHideDuration={3000}
+                            onClose={() => { setShowAlert(false) }} anchorOrigin={{ vertical: 'top', horizontal: "right" }} >
+                            <Alert onClose={() => { setShowAlert(false) }} severity="error" sx={{ width: '100%' }} >
+                                {message}
+                            </Alert>
+                        </Snackbar>
+
+                    )}
+                </Paper>
+            </Container>
+
+        </>
+    )
+}
+
+export default Login
