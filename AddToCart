@@ -1,0 +1,123 @@
+import React, { useContext } from 'react';
+import { MyContext } from '../AuthProvider';
+import Backdrop from '@mui/material/Backdrop';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Fade from '@mui/material/Fade';
+// import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+
+const AddToCart = () => {
+    const { addCart, setAddCart, count, setCount,userData } = useContext(MyContext);
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const deleteItem = (id) => {
+        const updatedCart = Object.values(addCart).filter(item => item.id !== id);
+        setAddCart(updatedCart);
+        setCount(updatedCart.length);
+    }
+
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
+
+    return (
+        <div>
+            {Object.values(addCart).map((item) => {
+                return (
+                    <div key={item.id} className="card mb-3">
+                        <div className="row g-0">
+                            <div className="col-md-4">
+                                <img src={item.img} className="img-fluid rounded-start" alt="img not found" style={{ height: "18rem" }} />
+                            </div>
+                            <div className="col-md-8">
+                                <div className="card-body">
+                                    <h5 className="card-title">{item.heading}</h5>
+                                    <p style={{ textDecorationLine: "line-through", color: "red" }}> Rs {item.MRP}</p>
+                                    <h5>₹ {item.RS}</h5>
+                                    <small>Inclusive of all taxes</small>
+                                    <div className="col-12 mt-3">
+                                        <button type='button' className='btn col-4 m-1 rounded-5' style={{ backgroundColor: "orange" }} onClick={handleOpen} >Buy Now</button>
+                                        <button className='btn btn-outline-danger col-4 m-1 rounded-5' onClick={() => deleteItem(item.id)}>Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            })}
+            <Modal
+                        aria-labelledby="transition-modal-title"
+                        aria-describedby="transition-modal-description"
+                        open={open}
+                        onClose={handleClose}
+                        closeAfterTransition
+                        slots={{ backdrop: Backdrop }}
+                        slotProps={{
+                            backdrop: {
+                                timeout: 500,
+                            },
+                        }}
+                    >
+                        <Fade in={open}>
+                            <Box sx={style}>
+                                <Typography id="transition-modal-title" variant="h6" component="h2">
+                                    Fill Address Details
+                                </Typography>
+                                {/* <form className="form pt-3"> */}
+                                <div className="row">
+                                    <div className="col-6">
+                                        <label htmlFor="" className="form-label">FirstName <span style={{ color: "red" }}>*</span></label>
+                                        <input type="text" className="form-control" id='' name='firstName'
+                                            value={userData.firstName} />
+                                    </div>
+                                    <div className="col-6">
+                                        <label className="form-label">LastName <span style={{ color: "red" }}>*</span></label>
+                                        <input type="text" className="form-control " id=''
+                                            value={userData.lastName} />
+                                    </div>
+                                    <div className="col-6">
+                                        <label className="form-label">Mobile No<span style={{ color: "red" }}>*</span></label>
+                                        <input type="text" className="form-control " id=''/>
+                                    </div>
+                                    <div className="col-6">
+                                        <label className="form-label">Alternate No<span style={{ color: "red" }}>*</span></label>
+                                        <input type="text" className="form-control " id=''/>
+                                    </div>
+                                    <div className="input-group mt-3">
+                                        <span className="input-group-text ">Delivery Address <span style={{ color: "red" }}>*</span></span>
+                                        <textarea className="form-control " id="" name="address" placeholder={userData.address} />
+                                    </div>
+                                    <div className="col-6">
+                                        <label className="form-label">City<span style={{ color: "red" }}>*</span></label>
+                                        <input type="text" className="form-control " id=''/>
+                                    </div>
+                                    <div className="col-6">
+                                        <label className="form-label">Pincode<span style={{ color: "red" }}>*</span></label>
+                                        <input type="number" className="form-control " id=''/>
+                                    </div>
+                                    <div className="col-6">
+                                        <button type='button' className='btn btn-outline-secondary mt-3' onClick={handleClose} >Place order </button>
+                                    </div>
+
+                                </div>
+                                {/* </form>    */}
+
+                            </Box>
+                        </Fade>
+                    </Modal>
+        </div>
+    )
+}
+
+export default AddToCart;
