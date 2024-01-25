@@ -1,0 +1,135 @@
+import { Alert, Avatar, Button, Paper, Snackbar, Typography } from '@mui/material';
+import axios from 'axios';
+import React from 'react'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+
+const objectData = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  address:""
+
+}
+
+const SignUp = () => {
+  const [data, setData] = useState(objectData);
+  const [showAlert, setShowAlert] = React.useState(false);
+  const [message, setMessage] = React.useState('');
+  const [color,setColor] = React.useState('');
+
+  const goto = useNavigate();
+
+  const handleChenge = (e) => {
+    setData(prevSet => ({
+      ...prevSet,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  const validate=()=>{
+    if (data.firstName=='') {
+      setShowAlert(true);
+      setMessage("Please enter first name");
+      setColor("error");
+
+    }
+    else if(data.lastName==''){
+      setShowAlert(true);
+      setMessage("Please enter Last name");
+      setColor("error");
+
+    }
+    else if(data.email==''){
+      setShowAlert(true);
+      setMessage("Please enter email-id");
+      setColor("error");
+
+    }
+    else if(data.password==''){
+      setShowAlert(true);
+      setMessage("Please enter Password");
+      setColor("error");
+
+    }
+    else{
+      SubmitData();
+    }
+    
+  }
+
+  const SubmitData = () => {
+    // e.preventDefault();
+
+    axios.post('http://localhost:9000/users', data)
+      .then(() => {
+        console.log("Data Added SuccessFully !!!!!!");
+      })
+      .catch((error) => {
+        console.log("Somthing in wrong ", error);
+      })
+    goto("");
+    setData(objectData);
+    setShowAlert(true);
+    setMessage("Register successfully,Login to procced");
+    setColor("success");
+    setTimeout(() => {
+      goto('/');
+    },2000 );
+  }
+  
+  return (
+    <div className="container p-5 d-flex justify-content-center align-items-center" style={{}}>
+      <Paper elevation={7} sx={{ p: 5, pt: 0 }}>
+
+        <div className="row col-12 d-flex justify-content-center align-items-center " >
+          <Avatar sx={{ m: 1, mt: 2, bgcolor: 'secondary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography sx={{ textAlign: "center" }} component="h1" variant="h5">
+            Sign up
+          </Typography>
+        </div>
+
+        <form className="form pt-3">
+          <div className="row">
+            <div className="col-6">
+              <label htmlFor="" className="form-label">FirstName <span style={{ color: "red" }}>*</span></label>
+              <input type="text" className="form-control" id='' name='firstName' value={data.firstName} onChange={handleChenge} />
+            </div>
+            <div className="col-6">
+              <label className="form-label">LastName <span style={{ color: "red" }}>*</span></label>
+              <input type="text" className="form-control " id='' name='lastName' value={data.lastName} onChange={handleChenge} />
+            </div>
+          </div>
+          <label className="form-label ">Email <span style={{ color: "red" }}>*</span></label>
+          <input type="email" className="form-control" id='' name='email' value={data.email} onChange={handleChenge} />
+          <label className="form-label ">Password <span style={{ color: "red" }}>*</span></label>
+          <input type="text" className="form-control mb-3 " id='' name='password' value={data.password} onChange={handleChenge} />
+          <div className="input-group">
+            <span className="input-group-text ">Address <span style={{ color: "red" }}>*</span></span>
+            <textarea className="form-control " id="" name="address" value={data.address} onChange={handleChenge} />
+          </div>
+          <div className=' d-flex justify-content-lg-between '>
+          <button type='button' className='btn btn-primary mt-2 ' onClick={() => {validate()}}>Sign Up</button>
+          <Button className='mt-2'><Link to='/'>Already Have an Account</Link></Button>
+          </div>
+         
+        </form>
+               {showAlert && (
+                        <Snackbar open={showAlert} autoHideDuration={3000}
+                            onClose={() => { setShowAlert(false) }} anchorOrigin={{ vertical: 'top', horizontal: "right" }} >
+                            <Alert onClose={() => { setShowAlert(false) }} severity={color} sx={{ width: '100%' }} >
+                                {message}
+                            </Alert>
+                        </Snackbar>
+
+                    )}
+      </Paper>
+    </div>
+  )
+}
+
+export default SignUp
