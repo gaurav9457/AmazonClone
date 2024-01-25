@@ -1,0 +1,198 @@
+import React, { useContext, useEffect, useState } from 'react';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import HoverRating from './HoverRating';
+import { MyContext } from '../AuthProvider';
+import Backdrop from '@mui/material/Backdrop';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Fade from '@mui/material/Fade';
+// import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+
+
+const View = () => {
+    const [getdata, setGetData] = useState([]);
+    const { id } = useParams();
+    const url = 'http://localhost:9000/card';
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    const { addCart, setAddCart, count, setCount, userData } = useContext(MyContext);
+
+    useEffect(() => {
+        axios.get(`http://localhost:9000/card/${id}`)
+            .then((res) => {
+                setGetData(res.data)
+            })
+            .catch((error) => {
+                alert("Error", error)
+
+            })
+    })
+
+    const addtoCart = (item) => {
+        setAddCart((prev) => ({
+            ...prev,
+            [item.id]: { ...item }
+
+        }));
+        setCount(Object.values(addCart).length + 1);
+
+    }
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
+
+
+    return (
+        <>
+            <div className="container mt-3">
+                <div className="row">
+                    <div class="card col-5" style={{ "width": "18rem", "border": "none" }}>
+                        <img src={getdata.img} class="card-img-top" alt="image not found" />
+
+                    </div>
+
+                    <div className="col-sm-7 ">
+                        <h3 className=''>{getdata.heading}</h3>
+                        <p style={{ textDecorationLine: "line-through" }}>Rs {getdata.MRP}</p>
+                        <h5>₹ {getdata.RS}</h5>
+                        <small>Inclusive of all taxes</small>
+                        <HoverRating />
+                        <button className='btn col-5 m-1 rounded-5 ' style={{ backgroundColor: "orange" }}
+                            onClick={handleOpen}>Buy Now</button>
+                            
+                        <button className='btn btn-warning col-5 m-1 rounded-5 '
+                            onClick={() => { addtoCart(getdata) }} >Add to Cart</button>
+
+                        <div className="col-sm-12 m-0 mt-2">
+                            <div class="accordion " id="accordionExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            About
+                                        </button>
+                                    </h2>
+                                    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <strong>Brand : </strong>{getdata.brand} <br />
+                                            <strong>Modal : </strong>{getdata.modal}
+                                            <p>Special Feature : {getdata.Special}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                            More Information
+                                        </button>
+                                    </h2>
+                                    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <ul>
+                                                <li>{getdata.accrAbout}</li>
+                                                <li>{getdata.accrAbout2}</li>
+                                                <li>{getdata.accrAbout3}</li>
+                                                <li>{getdata.accrAbout4}</li>
+
+                                            </ul>
+
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        Accordion Item #3
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                                    </div>
+                                </div>
+                            </div> */}
+                            </div>
+                        </div>
+
+                    </div>
+                    <Modal
+                        aria-labelledby="transition-modal-title"
+                        aria-describedby="transition-modal-description"
+                        open={open}
+                        onClose={handleClose}
+                        closeAfterTransition
+                        slots={{ backdrop: Backdrop }}
+                        slotProps={{
+                            backdrop: {
+                                timeout: 500,
+                            },
+                        }}
+                    >
+                        <Fade in={open}>
+                            <Box sx={style}>
+                                <Typography id="transition-modal-title" variant="h6" component="h2">
+                                    Fill Address Details
+                                </Typography>
+                                {/* <form className="form pt-3"> */}
+                                <div className="row">
+                                    <div className="col-6">
+                                        <label htmlFor="" className="form-label">FirstName <span style={{ color: "red" }}>*</span></label>
+                                        <input type="text" className="form-control" id='' name='firstName'
+                                            value={userData.firstName} />
+                                    </div>
+                                    <div className="col-6">
+                                        <label className="form-label">LastName <span style={{ color: "red" }}>*</span></label>
+                                        <input type="text" className="form-control " id=''
+                                            value={userData.lastName} />
+                                    </div>
+                                    <div className="col-6">
+                                        <label className="form-label">Mobile No<span style={{ color: "red" }}>*</span></label>
+                                        <input type="text" className="form-control " id=''/>
+                                    </div>
+                                    <div className="col-6">
+                                        <label className="form-label">Alternate No<span style={{ color: "red" }}>*</span></label>
+                                        <input type="text" className="form-control " id=''/>
+                                    </div>
+                                    <div className="input-group mt-3">
+                                        <span className="input-group-text ">Delivery Address <span style={{ color: "red" }}>*</span></span>
+                                        <textarea className="form-control " id="" name="address" placeholder={userData.address} />
+                                    </div>
+                                    <div className="col-6">
+                                        <label className="form-label">City<span style={{ color: "red" }}>*</span></label>
+                                        <input type="text" className="form-control " id=''/>
+                                    </div>
+                                    <div className="col-6">
+                                        <label className="form-label">Pincode<span style={{ color: "red" }}>*</span></label>
+                                        <input type="number" className="form-control " id=''/>
+                                    </div>
+                                    <div className="col-6">
+                                        <button type='button' className='btn btn-outline-secondary mt-3' onClick={handleClose} >Place order </button>
+                                    </div>
+
+                                </div>
+                                {/* </form>    */}
+
+                            </Box>
+                        </Fade>
+                    </Modal>
+                </div>
+            </div>
+        </>
+    )
+}
+
+export default View
