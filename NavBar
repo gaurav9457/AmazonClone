@@ -1,0 +1,410 @@
+import React, { useState } from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+
+import image from '../Images/logo (1).png'
+import flag from "../Images/Flag_of_India.png"
+import SearchIcon from '@mui/icons-material/Search';
+import { FormControl, Select, Stack } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+// import { MyContext } from '../../AutoProvider';
+import PersonIcon from '@mui/icons-material/Person';
+import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
+import Badge from '@mui/material/Badge';
+import { styled } from '@mui/material/styles';
+// import IconButton from '@mui/material/IconButton';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import AddBusinessIcon from '@mui/icons-material/AddBusiness';
+import "../NavBar/NavBar.css"
+import { MyContext } from '../AuthProvider';
+import { Link, useNavigate } from 'react-router-dom';
+
+
+
+// const pages = ['Products', 'Pricing', 'Blog'];
+const settings = ['Logout'];
+
+const StyledBadge = styled(Badge)(({ theme }) => ({
+    '& .MuiBadge-badge': {
+        right: -3,
+        top: 13,
+        border: `2px solid ${theme.palette.background.paper}`,
+        padding: '0 4px',
+    },
+}));
+
+function NavBar() {
+    const [language, setLanguage] = React.useState('');
+    const [anchorElNav, setAnchorElNav] = React.useState(null);
+    const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const [userInput, setUserInput] = React.useState("");
+    // const [selectedCategory, setSelectedCategory] = useState('');
+
+    const objData = React.useContext(MyContext);
+
+
+    const handleOpenNavMenu = (event) => {
+        setAnchorElNav(event.currentTarget);
+    };
+    const handleOpenUserMenu = (event) => {
+        setAnchorElUser(event.currentTarget);
+    };
+
+    const handleCloseNavMenu = () => {
+        setAnchorElNav(null);
+    };
+
+    const handleCloseUserMenu = () => {
+        setAnchorElUser(null);
+    };
+    // --------------------------------
+    // const { t } = useTranslation();
+
+    // const { i18n } = useTranslation();
+
+    // const changeLanguage = (lng) => {
+    //     i18n.changeLanguage(lng);
+    // };
+    const data = objData.userData;
+
+    const handleChangelan = (event) => {
+        setLanguage(event.target.value);
+    };
+
+  const handleCategoryChange = (e) => {
+    objData.setSelectedCategory(e.target.value);
+  };
+  
+
+    // const handleSubmit = (e) => {
+
+    //     objData.setSearchData(userInput);
+    //     console.log("inputData ", userInput);
+    // }
+
+
+
+    return (
+        <>
+            <AppBar position="static" sx={{ backgroundColor: "black" }}>
+                <Container maxWidth="xl">
+                    <Toolbar disableGutters>
+
+                        {/* {/ --------------------------------------Menu Icon And Bar----------------------- /} */}
+                        <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                            <IconButton
+                                size="large"
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={handleOpenNavMenu}
+                                color="inherit"
+                            >
+                                <MenuIcon />
+                            </IconButton>
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorElNav}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'left',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'left',
+                                }}
+                                open={Boolean(anchorElNav)}
+                                onClose={handleCloseNavMenu}
+                                sx={{
+                                    display: { xs: 'block', md: 'none' },
+                                }}
+                            >
+                                {/* {pages.map((page) => (
+                                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                    <Typography textAlign="center">{page}</Typography>
+                                </MenuItem>
+                            ))} */}
+                                <MenuItem>
+                                    <form id='Searchbar' className="d-flex " role="">
+                                        <div class="input-group input-group-sm" >
+                                        <select class="form-select form-select-sm h-100"
+                                    onChange={handleCategoryChange}
+                                    value={objData.selectedCategory}
+                                     aria-label="Small select example">
+                                            <option selected>All</option>
+                                            <option value="headphone">Headphone</option>
+                                            <option value="tv">TV</option>
+                                            <option value="laptop">Laptop</option>
+                                            <option value="washing">Washing Machine</option>
+                                    </select>
+                                            <input type="search" class="form-control" style={{ backgroundColor: "white", color: "black" }}
+                                                placeholder="Search Shopमाल.in" aria-label="" onChange={(e) => { objData.setSearchInp(e.target.value) }} />
+                                            <button className="btn btn-outline-secondary" style={{ backgroundColor: "orange" }} ><SearchIcon /></button>
+                                        </div>
+                                    </form>
+                                </MenuItem>
+                                <MenuItem>
+                                    <FormControl sx={{ m: 1, minWidth: 120 }}>
+                                        <Select
+                                            labelId="demo-select-small-label"
+                                            id="demo-select-small"
+                                            value={language}
+                                            displayEmpty
+                                            onChange={handleChangelan}
+                                            sx={{ color: "black", height: "30px", width: "auto" }}
+                                            renderValue={(selected) => (
+                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                    <img src={flag} alt="" style={{ height: "20px", marginRight: '5px' }} />
+                                                    {selected}
+                                                </div>
+                                            )}
+                                        >
+                                            <MenuItem value="English">English</MenuItem>
+                                            <MenuItem value="Hindi">Hindi</MenuItem>
+                                            <MenuItem value="Marathi">Marathi</MenuItem>
+                                            <MenuItem value="Spanish">Spanish</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </MenuItem>
+                                <MenuItem>
+                                    <Tooltip title="Open settings">
+                                        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                            <Avatar alt={data.firstName} src="/static/images/avatar/2.jpg" />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <IconButton aria-label="cart" >
+                                        <Link to={'/addtocart'}>
+                                            <StyledBadge badgeContent={objData.count} color="primary">
+                                                <ShoppingCartIcon sx={{ color: "balck" }} />
+                                            </StyledBadge>
+                                        </Link>
+                                    </IconButton >
+                                </MenuItem>
+                            </Menu>
+                        </Box>
+
+                        {/*--------------------------------------------Logo Image And Text data---------------------------------*/}
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="a"
+                            href="#app-bar-with-responsive-menu"
+                            sx={{
+                                mr: 2,
+                                display: { xs: 'none', md: 'flex' },
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                            }}
+                        >
+                            <Link to='/home'> <img src={image} alt="Logo" style={{ opacity: 1, height: '45px', width: 'auto', marginRight: '8px' }} /></Link>
+                        </Typography>
+                        <Box sx={{
+                            display: { xs: "none", md: "flex" },
+                            fontWeight: 700,
+                            color: 'inherit',
+                            textDecoration: 'none',
+                        }}>
+
+                            <p style={{ color: "white", marginBottom: "0px" }}> <PersonIcon /> {data.firstName} {data.lastName} <br />
+                                <EditLocationAltIcon />{data.address}
+                            </p>
+                        </Box>
+
+                        <Typography
+                            variant="h5"
+                            noWrap
+                            component="a"
+                            href="#app-bar-with-responsive-menu"
+                            sx={{
+                                mr: 2,
+                                display: { xs: 'flex', md: 'none' },
+                                flexGrow: 1,
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                            }}
+                        >
+                            <img src={image} alt="Logo" style={{ height: '40px', width: 'auto', marginRight: '8px' }} />
+                        </Typography>
+
+                        {/* {/ -----------------------SearchBar------------------------------------------------------- /} */}
+                        <Box id="DispalyDiv" m={2} sx={{ display: { md: "flex", width: "40%" } }}>
+                            <div id='Searchbar' className="d-flex " style={{ width: "100%" }} role=''>
+                                <div class="input-group input-group-md" >
+                                    {/* <button className="btn btn-outline-secondary dropdown-toggle" style={{ backgroundColor: "darkgrey", color: "black" }} type="button" data-bs-toggle="dropdown" aria-expanded="false">All</button>
+                                    <ul className="dropdown-menu">
+                                        <li> <option value={'washing'}>Washing machine</option></li>
+                                        <li><a className="dropdown-item" href="#">Headphone</a></li>
+                                        <li><a className="dropdown-item" href="#">Tv</a></li>
+                                        <li><a className="dropdown-item" href="#">Something else here</a></li>
+                                        <li><a className="dropdown-item" href="#">Separated link</a></li>
+                                    </ul> */}
+                                    <div className="col-md-2">
+                                    <select class="form-select form-select-sm h-100"
+                                    onChange={handleCategoryChange}
+                                    value={objData.selectedCategory}
+                                     aria-label="Small select example">
+                                            <option selected>All</option>
+                                            <option value="headphone">Headphone</option>
+                                            <option value="tv">TV</option>
+                                            <option value="laptop">Laptop</option>
+                                            <option value="washing">Washing Machine</option>
+                                    </select>
+                                    </div>
+                                    <input type="search" class="form-control" style={{ backgroundColor: "white", color: "black" }} id="search"
+                                        placeholder="Search Shopमॉल.in" aria-label="" onChange={(e) => { objData.setSearchInp(e.target.value) }} />
+                                    <button className="btn" style={{ backgroundColor: "orange" }} htmlFor="search" ><SearchIcon /></button>
+
+                                </div>
+                            </div>
+                        </Box>
+
+                        {/* ------------------------------------------ language or person Logo--------------------------------*/}
+                        <Stack id="languageBox" direction={{ xs: 'column', sm: 'row' }}
+                            spacing={{ xs: 1, sm: 2, md: 3 }} sx={{ flexGrow: 0 }}>
+                            <FormControl sx={{ minWidth: 120 }}>
+                                <Select
+                                    labelId="demo-select-small-label"
+                                    id="demo-select-small"
+                                    value={language}
+                                    displayEmpty
+                                    onChange={handleChangelan}
+                                    sx={{ color: "white", height: "30px", width: "auto", mt: 2 }}
+                                    renderValue={(selected) => (
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <img src={flag} alt="" style={{ height: "20px", marginRight: '5px' }} />
+                                            {selected}
+                                        </div>
+                                    )}
+                                >
+                                    <MenuItem value="English">English</MenuItem>
+                                    <MenuItem value="Hindi">Hindi</MenuItem>
+                                    <MenuItem value="Marathi">Marathi</MenuItem>
+                                    <MenuItem value="Spanish">Spanish</MenuItem>
+                                </Select>
+                            </FormControl>
+                            {/* onClick={() => changeLanguage('hi')}
+                                  onClick={() => changeLanguage('en')}
+                                  onClick={() => changeLanguage('fr')}
+                                     onClick={() => changeLanguage('es')} */}
+
+                            {/* <Box>
+                                <div class="dropdown">
+                                    <button class="btn active  dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Dropdown
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><button class="dropdown-item" type="button">Action</button></li>
+                                        <li><button class="dropdown-item" type="button">Another action</button></li>
+                                        <li><button class="dropdown-item" type="button">Something else here</button></li>
+                                    </ul>
+                                </div>
+                            </Box> */}
+
+                            <Tooltip title="Information">
+                                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                    <Avatar alt={data.firstName} src="/static/images/avatar/2.jpg" />
+                                </IconButton>
+                            </Tooltip>
+                            <Menu
+                                sx={{ mt: '45px' }}
+                                id="menu-appbar"
+                                anchorEl={anchorElUser}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(anchorElUser)}
+                                onClose={handleCloseUserMenu}
+                            >
+                                {settings.map((setting) => (
+                                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                        <Link to={`/`} onClick={() => { objData.setLoggedIn1(false) }}>{setting}</Link>
+                                    </MenuItem>
+                                ))}
+                            </Menu>
+                            <IconButton aria-label="cart" >
+                                <Link to={'/addtocart'}>
+                                    <StyledBadge badgeContent={objData.count} color="primary">
+                                        <ShoppingCartIcon sx={{ color: "white" }} />
+                                    </StyledBadge>
+                                </Link>
+                            </IconButton >
+
+                            <Tooltip title="Add your Product">
+                                <Link to='/addProduct' >
+                                    <AddBusinessIcon sx={{ mt: 2, color: "white" }} />
+                                </Link>
+
+                            </Tooltip>
+
+                        </Stack>
+
+                        {/* ------------------------------------ Cart ---------------------------------- */}
+
+                    </Toolbar>
+
+                </Container>
+
+            </AppBar>
+
+
+            {/* {/ ----------------------------------------------Second NavBar----------------------------------------------------- /} */}
+            <nav class="navbar navbar-expand-md" style={{ backgroundColor: "#25396c" }}>
+                <div class="container-fluid ">
+                    {/* <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                 <span class="navbar-toggler-icon"></span>
+             </button> */}
+                    <a style={{ color: 'white' }} class="navbar-brand" href="#">All</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav" id='UiCode' >
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="#">Shopमॉल MiniTv</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Sell</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Shopमॉल Pay</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link " aria-disabled="true">Gift Cards</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link " aria-disabled="true">Buy Again</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link " aria-disabled="true">Fashion</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </>
+    );
+}
+export default NavBar
