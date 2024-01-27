@@ -38,6 +38,17 @@ const Home = () => {
   let filterData=object.searchInp;
   let inputData = getdata.filter((item) => item.about.toLowerCase().includes(filterData.toLocaleLowerCase()));
 
+let categoryData = getdata.filter((item) =>
+  (object.selectedCategory === '' || item.category === object.selectedCategory)
+  );
+  
+if (categoryData.length >0 ) {
+  inputData=categoryData;
+}
+else{
+  inputData=inputData;
+}
+
   if (!object.isLoggedIn1) {
     return <Login />;
   }
